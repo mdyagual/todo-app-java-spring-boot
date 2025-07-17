@@ -11,10 +11,6 @@ import java.util.List;
 @NoArgsConstructor
 public class Task {
     public Long id;
-    public String title;
-    public Date createdAt;
-    public Date dueDate;
-    public Date startDate;
+    public String description;
     public String status;
-    public List<User> assignedTo;
 }

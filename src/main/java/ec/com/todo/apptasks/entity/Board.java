@@ -12,6 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Board {
-    public String name;
-    public List<Vertical> columns;
+    public Long id;
+    public String title;
+    public List<Phase> columns;
 }

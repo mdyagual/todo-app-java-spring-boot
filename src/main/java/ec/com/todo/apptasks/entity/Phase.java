@@ -11,8 +11,8 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Vertical {
+public class Phase {
     public Long id;
-    public String name;
+    public String title;
     public List<Task> tasks;
 }
