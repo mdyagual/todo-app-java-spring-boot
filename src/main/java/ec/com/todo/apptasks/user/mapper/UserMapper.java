@@ -16,6 +16,5 @@ public interface UserMapper {
 
     UserDTO toDTO(User user);
 
-    @Mapping(target = "id", ignore = true)
     void updateEntity(@MappingTarget User user, UpdateUserDTO dto);
 }
