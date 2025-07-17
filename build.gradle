@@ -24,6 +24,8 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.36'
 	annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.36'
+	implementation "org.mapstruct:mapstruct:1.5.3.Final"
+	annotationProcessor "org.mapstruct:mapstruct-processor:1.5.3.Final"
 }
 
 tasks.named('test') {
