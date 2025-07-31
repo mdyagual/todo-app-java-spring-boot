@@ -10,23 +10,34 @@ import ec.com.todo.apptasks.user.mapper.UserMapperImpl;
 import ec.com.todo.apptasks.user.repository.UserRepository;
 import ec.com.todo.apptasks.user.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper mapper;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.mapper = new UserMapperImpl();
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public void save(CreateUserDTO uDTO) {
-        userRepository.save(mapper.toEntity(uDTO));
+        // Generate random password (could be UUID or other logic)
+        String rawPassword = UUID.randomUUID().toString().substring(0, 8);
+        String hashedPassword = passwordEncoder.encode(rawPassword);
+
+        User user = mapper.toEntity(uDTO);
+        user.setPassword(hashedPassword); // Set the hashed password
+
+        userRepository.save(user);
     }
 
     @Override
