@@ -12,6 +12,7 @@ import org.mapstruct.MappingTarget;
 public interface UserMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "isActive", ignore = true)
+    @Mapping(target = "password", ignore = true)
     User toEntity(CreateUserDTO userDTO);
 
     UserDTO toDTO(User user);
