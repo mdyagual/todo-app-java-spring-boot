@@ -5,10 +5,7 @@ import ec.com.todo.apptasks.user.dto.request.DeleteUserDTO;
 import ec.com.todo.apptasks.user.dto.request.UpdateUserDTO;
 import ec.com.todo.apptasks.user.dto.response.UserDTO;
 import ec.com.todo.apptasks.user.service.UserService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -27,17 +24,17 @@ public class UserController {
     }
 
     @PostMapping("/create")
-    public void create(CreateUserDTO userDTO) {
+    public void create(@RequestBody CreateUserDTO userDTO) {
         userService.save(userDTO);
     }
 
     @PostMapping("/update")
-    public void update(UpdateUserDTO userDTO) {
+    public void update(@RequestBody UpdateUserDTO userDTO) {
         userService.update(userDTO);
     }
 
     @PostMapping("/delete")
-    public void delete(DeleteUserDTO userDTO) {
+    public void delete(@RequestBody DeleteUserDTO userDTO) {
         userService.delete(userDTO);
     }
 
