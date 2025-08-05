@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -20,8 +21,14 @@ public class Phase {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "col_seq")
     @SequenceGenerator(name = "col_seq", sequenceName = "col_sequence", allocationSize = 1, initialValue = 3000)
-    public Long id;
-    public String title;
+    private Long id;
+
+    @Enumerated(EnumType.STRING)
+    private PhaseName name;
+
+    private LocalDate createdAt;
+    private LocalDate lastModifiedAt;
+    private Boolean isActive;
 
     @ManyToOne
     @JoinColumn(name = "board_id")
@@ -29,4 +36,11 @@ public class Phase {
 
     @OneToMany(mappedBy = "phase", cascade = CascadeType.ALL, orphanRemoval = true)
     public List<Task> tasks;
+
+    @PrePersist
+    public void onCreate() {
+        this.createdAt = LocalDate.now();
+        this.lastModifiedAt = LocalDate.now();
+        this.isActive = true;
+    }
 }
