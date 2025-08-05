@@ -5,6 +5,7 @@ import ec.com.todo.apptasks.user.dto.request.DeleteUserDTO;
 import ec.com.todo.apptasks.user.dto.request.UpdateUserDTO;
 import ec.com.todo.apptasks.user.dto.response.UserDTO;
 import ec.com.todo.apptasks.user.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,17 +25,17 @@ public class UserController {
     }
 
     @PostMapping("/create")
-    public void create(@RequestBody CreateUserDTO userDTO) {
+    public void create(@Valid @RequestBody CreateUserDTO userDTO) {
         userService.save(userDTO);
     }
 
     @PostMapping("/update")
-    public void update(@RequestBody UpdateUserDTO userDTO) {
+    public void update(@Valid @RequestBody UpdateUserDTO userDTO) {
         userService.update(userDTO);
     }
 
     @PostMapping("/delete")
-    public void delete(@RequestBody DeleteUserDTO userDTO) {
+    public void delete(@Valid @RequestBody DeleteUserDTO userDTO) {
         userService.delete(userDTO);
     }
 

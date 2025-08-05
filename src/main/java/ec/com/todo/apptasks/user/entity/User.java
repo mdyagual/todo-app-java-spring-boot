@@ -5,7 +5,6 @@ import ec.com.todo.apptasks.board.entity.Board;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
