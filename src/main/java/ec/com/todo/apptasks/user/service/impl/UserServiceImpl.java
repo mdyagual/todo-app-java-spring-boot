@@ -5,12 +5,11 @@ import ec.com.todo.apptasks.user.dto.request.DeleteUserDTO;
 import ec.com.todo.apptasks.user.dto.request.UpdateUserDTO;
 import ec.com.todo.apptasks.user.dto.response.UserDTO;
 import ec.com.todo.apptasks.user.entity.User;
-import ec.com.todo.apptasks.user.exceptions.ResourceNotFoundException;
+import ec.com.todo.apptasks.user.exception.UserNotFoundException;
 import ec.com.todo.apptasks.user.mapper.UserMapper;
 import ec.com.todo.apptasks.user.mapper.UserMapperImpl;
 import ec.com.todo.apptasks.user.repository.UserRepository;
 import ec.com.todo.apptasks.user.service.UserService;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -52,7 +51,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void update(UpdateUserDTO uDTO) {
         User user = userRepository.findById(uDTO.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + uDTO.getId()));
+                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + uDTO.getId()));
         mapper.updateEntity(user, uDTO);
         userRepository.save(user);
     }
@@ -60,7 +59,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(DeleteUserDTO uDTO) {
         User user = userRepository.findById(uDTO.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + uDTO.getId()));
+                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + uDTO.getId()));
 
         user.setIsActive(false);
 
