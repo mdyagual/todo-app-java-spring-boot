@@ -20,22 +20,22 @@ public class UserController {
     }
 
     @GetMapping("/all")
-    public List<UserDTO> getAll() {
+    public List<UserDTO> getAllUsers() {
         return userService.getAll();
     }
 
     @PostMapping("/create")
-    public void create(@Valid @RequestBody CreateUserDTO userDTO) {
+    public void createUser(@Valid @RequestBody CreateUserDTO userDTO) {
         userService.save(userDTO);
     }
 
     @PostMapping("/update")
-    public void update(@Valid @RequestBody UpdateUserDTO userDTO) {
+    public void updateUser(@Valid @RequestBody UpdateUserDTO userDTO) {
         userService.update(userDTO);
     }
 
     @PostMapping("/delete")
-    public void delete(@Valid @RequestBody DeleteUserDTO userDTO) {
+    public void deleteUser(@Valid @RequestBody DeleteUserDTO userDTO) {
         userService.delete(userDTO);
     }
 
