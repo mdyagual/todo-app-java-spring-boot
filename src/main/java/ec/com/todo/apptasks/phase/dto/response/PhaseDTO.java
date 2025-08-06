@@ -10,5 +10,5 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class PhaseDTO {
-    public String name;
+    private String name;
 }

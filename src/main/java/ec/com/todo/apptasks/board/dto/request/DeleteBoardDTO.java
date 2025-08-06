@@ -12,5 +12,5 @@ import lombok.ToString;
 @ToString
 public class DeleteBoardDTO {
     @NotBlank(message = "ID must not be empty")
-    public Long id;
+    private Long id;
 }

@@ -11,11 +11,11 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class UserDTO {
-    public Long id;
-    public String name;
-    public String username;
-    public String password;
-    public Boolean isActive;
+    private Long id;
+    private String name;
+    private String username;
+    private String password;
+    private Boolean isActive;
 
 
 }
