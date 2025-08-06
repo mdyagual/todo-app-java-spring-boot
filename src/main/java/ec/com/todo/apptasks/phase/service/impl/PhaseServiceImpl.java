@@ -1,4 +1,4 @@
-package ec.com.todo.apptasks.phase.service;
+package ec.com.todo.apptasks.phase.service.impl;
 
 import ec.com.todo.apptasks.phase.dto.request.CreatePhaseDTO;
 import ec.com.todo.apptasks.phase.dto.request.DeletePhaseDTO;
@@ -8,6 +8,7 @@ import ec.com.todo.apptasks.phase.exception.PhaseNotFoundException;
 import ec.com.todo.apptasks.phase.mapper.PhaseMapper;
 import ec.com.todo.apptasks.phase.mapper.PhaseMapperImpl;
 import ec.com.todo.apptasks.phase.repository.PhaseRepository;
+import ec.com.todo.apptasks.phase.service.PhaseService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;

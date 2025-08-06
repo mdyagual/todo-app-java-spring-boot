@@ -13,6 +13,7 @@ public interface PhaseMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "lastModifiedAt", ignore = true)
+    @Mapping(target = "isActive", ignore = true)
     Phase toEntity(CreatePhaseDTO phaseDTO);
 
     PhaseDTO toDTO(Phase phase);
