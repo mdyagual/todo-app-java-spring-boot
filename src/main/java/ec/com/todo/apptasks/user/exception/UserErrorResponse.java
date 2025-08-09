@@ -1,7 +1,5 @@
 package ec.com.todo.apptasks.user.exception;
 
-
-import jakarta.persistence.PrePersist;
 import lombok.Getter;
 import lombok.Setter;
 
