@@ -8,7 +8,7 @@ import ec.com.todo.apptasks.board.mapper.BoardMapper;
 import ec.com.todo.apptasks.board.mapper.BoardMapperImpl;
 import ec.com.todo.apptasks.board.repository.BoardRepository;
 import ec.com.todo.apptasks.board.service.BoardService;
-import ec.com.todo.apptasks.user.exception.UserNotFoundException;
+import ec.com.todo.apptasks.shared.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -48,7 +48,7 @@ public class BoardServiceImpl implements BoardService {
                             boardRepository.save(board);
                         },
                         () -> {
-                            throw new UserNotFoundException("Board not found with id: " + bDTO.getId());
+                            throw new ResourceNotFoundException("Board", bDTO.getId());
                         }
                 );
     }
@@ -63,7 +63,7 @@ public class BoardServiceImpl implements BoardService {
                             boardRepository.save(board);
                         },
                         () -> {
-                            throw new UserNotFoundException("Board not found with id: " + bDTO.getId());
+                            throw new ResourceNotFoundException("Board", bDTO.getId());
                         }
                 );
 

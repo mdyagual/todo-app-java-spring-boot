@@ -1,11 +1,11 @@
 package ec.com.todo.apptasks.user.service.impl;
 
+import ec.com.todo.apptasks.shared.exception.ResourceNotFoundException;
 import ec.com.todo.apptasks.user.dto.request.CreateUserDTO;
 import ec.com.todo.apptasks.user.dto.request.DeleteUserDTO;
 import ec.com.todo.apptasks.user.dto.request.UpdateUserDTO;
 import ec.com.todo.apptasks.user.dto.response.UserDTO;
 import ec.com.todo.apptasks.user.entity.User;
-import ec.com.todo.apptasks.user.exception.UserNotFoundException;
 import ec.com.todo.apptasks.user.mapper.UserMapper;
 import ec.com.todo.apptasks.user.mapper.UserMapperImpl;
 import ec.com.todo.apptasks.user.repository.UserRepository;
@@ -50,19 +50,30 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void update(UpdateUserDTO uDTO) {
-        User user = userRepository.findById(uDTO.getId())
-                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + uDTO.getId()));
-        mapper.updateEntity(user, uDTO);
-        userRepository.save(user);
+        userRepository.findById(uDTO.getId())
+                .ifPresentOrElse(
+                        user -> {
+                            mapper.updateEntity(user, uDTO);
+                            userRepository.save(user);
+                        },
+                        () -> {
+                            throw new ResourceNotFoundException("User", uDTO.getId());
+                        }
+                );
     }
 
     @Override
     public void delete(DeleteUserDTO uDTO) {
-        User user = userRepository.findById(uDTO.getId())
-                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + uDTO.getId()));
+        userRepository.findById(uDTO.getId())
+                .ifPresentOrElse(
+                        user -> {
+                            user.setIsActive(false);
+                            userRepository.save(user);
+                        },
+                        () -> {
+                            throw new ResourceNotFoundException("User", uDTO.getId());
+                        }
+                );
 
-        user.setIsActive(false);
-
-        userRepository.save(user);
     }
 }

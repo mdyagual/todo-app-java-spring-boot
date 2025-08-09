@@ -1,10 +1,10 @@
 package ec.com.todo.apptasks.task.service.impl;
 
+import ec.com.todo.apptasks.shared.exception.ResourceNotFoundException;
 import ec.com.todo.apptasks.task.dto.request.CreateTaskDTO;
 import ec.com.todo.apptasks.task.dto.request.DeleteTaskDTO;
 import ec.com.todo.apptasks.task.dto.request.UpdateTaskDTO;
 import ec.com.todo.apptasks.task.dto.response.TaskDTO;
-import ec.com.todo.apptasks.task.exception.TaskNotFoundException;
 import ec.com.todo.apptasks.task.mapper.TaskMapper;
 import ec.com.todo.apptasks.task.mapper.TaskMapperImpl;
 import ec.com.todo.apptasks.task.repository.TaskRepository;
@@ -25,8 +25,8 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void save(CreateTaskDTO taskDTO) {
-        taskRepository.save(mapper.toEntity(taskDTO));
+    public void save(CreateTaskDTO tDTO) {
+        taskRepository.save(mapper.toEntity(tDTO));
     }
 
     @Override
@@ -38,31 +38,31 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void update(UpdateTaskDTO taskDTO) {
-        taskRepository.findById(taskDTO.getId())
+    public void update(UpdateTaskDTO tDTO) {
+        taskRepository.findById(tDTO.getId())
                 .ifPresentOrElse(
                         task -> {
-                            mapper.updateEntity(task, taskDTO);
+                            mapper.updateEntity(task, tDTO);
                             task.setLastModifiedAt(LocalDate.now());
                             taskRepository.save(task);
                         },
                         () -> {
-                            throw new TaskNotFoundException("Task not found with id: " + taskDTO.getId());
+                            throw new ResourceNotFoundException("Task", tDTO.getId());
                         }
                 );
 
     }
 
     @Override
-    public void delete(DeleteTaskDTO taskDTO) {
-        taskRepository.findById(taskDTO.getId())
+    public void delete(DeleteTaskDTO tDTO) {
+        taskRepository.findById(tDTO.getId())
                 .ifPresentOrElse(
                         task -> {
                             task.setIsActive(false);
                             taskRepository.save(task);
                         },
                         () -> {
-                            throw new TaskNotFoundException("Task not found with id: " + taskDTO.getId());
+                            throw new ResourceNotFoundException("Task", tDTO.getId());
                         }
                 );
 
