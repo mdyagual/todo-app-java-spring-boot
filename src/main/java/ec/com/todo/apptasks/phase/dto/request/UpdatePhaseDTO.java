@@ -13,7 +13,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class UpdatePhaseDTO {
-    @NotBlank(message = "ID must not be empty")
+    @NotNull(message = "ID must not be empty")
     private Long id;
 
     @NotNull(message = "Phase name is required: TO_DO, IN_PROGRESS, REVIEW, BLOCKED, DONE")
