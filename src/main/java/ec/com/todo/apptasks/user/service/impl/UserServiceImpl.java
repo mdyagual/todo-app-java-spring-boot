@@ -10,6 +10,8 @@ import ec.com.todo.apptasks.user.mapper.UserMapper;
 import ec.com.todo.apptasks.user.mapper.UserMapperImpl;
 import ec.com.todo.apptasks.user.repository.UserRepository;
 import ec.com.todo.apptasks.user.service.UserService;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,12 +22,23 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper mapper;
+    private final EntityManager entityManager;
     private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, EntityManager entityManager) {
         this.userRepository = userRepository;
         this.mapper = new UserMapperImpl();
         this.passwordEncoder = passwordEncoder;
+        this.entityManager = entityManager;
+    }
+
+    public User getReferenceById(Long id) {
+        return entityManager.getReference(User.class, id);
+    }
+
+    public User getUserOrThrow(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User not found: " + id));
     }
 
     @Override

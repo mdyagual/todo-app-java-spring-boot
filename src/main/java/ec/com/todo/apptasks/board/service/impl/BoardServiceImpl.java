@@ -4,11 +4,16 @@ import ec.com.todo.apptasks.board.dto.request.CreateBoardDTO;
 import ec.com.todo.apptasks.board.dto.request.DeleteBoardDTO;
 import ec.com.todo.apptasks.board.dto.request.UpdateBoardDTO;
 import ec.com.todo.apptasks.board.dto.response.BoardDTO;
+import ec.com.todo.apptasks.board.entity.Board;
 import ec.com.todo.apptasks.board.mapper.BoardMapper;
 import ec.com.todo.apptasks.board.mapper.BoardMapperImpl;
 import ec.com.todo.apptasks.board.repository.BoardRepository;
 import ec.com.todo.apptasks.board.service.BoardService;
 import ec.com.todo.apptasks.shared.exception.ResourceNotFoundException;
+import ec.com.todo.apptasks.user.entity.User;
+import ec.com.todo.apptasks.user.service.UserService;
+import ec.com.todo.apptasks.user.service.impl.UserServiceImpl;
+import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -17,16 +22,21 @@ import java.util.List;
 @Service
 public class BoardServiceImpl implements BoardService {
     private final BoardRepository boardRepository;
+    private final UserService userService;
     private final BoardMapper mapper;
 
-    public BoardServiceImpl(BoardRepository boardRepository) {
+    public BoardServiceImpl(BoardRepository boardRepository, UserService userService) {
         this.boardRepository = boardRepository;
+        this.userService = userService;
         this.mapper = new BoardMapperImpl();
     }
 
     @Override
     public void save(CreateBoardDTO bDTO) {
-        boardRepository.save(mapper.toEntity(bDTO));
+        Board board = mapper.toEntity(bDTO);
+        board.setUser(userService.getReferenceById(bDTO.getUserId()));
+        boardRepository.save(board);
+
     }
 
     @Override
