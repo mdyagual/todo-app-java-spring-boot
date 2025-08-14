@@ -13,8 +13,10 @@ public interface TaskMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "lastModifiedAt", ignore = true)
+    @Mapping(target = "phase", ignore = true)
     Task toEntity(CreateTaskDTO taskDTO);
 
+    @Mapping(target = "phase", ignore = true)
     TaskDTO toDTO(Task task);
 
     void updateEntity(@MappingTarget Task task, UpdateTaskDTO dto);

@@ -14,8 +14,10 @@ public interface BoardMapper {
     @Mapping(target = "isActive", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "lastModifiedAt", ignore = true)
+    @Mapping(target = "user", ignore = true)
     Board toEntity(CreateBoardDTO boardDTO);
 
+    @Mapping(target = "user", ignore = true)
     BoardDTO toDTO (Board board);
 
     void updateEntity(@MappingTarget Board board, UpdateBoardDTO dto);

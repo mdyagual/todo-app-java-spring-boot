@@ -13,7 +13,6 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class UpdateBoardDTO {
-
     @NotNull(message = "ID must not be empty")
     private Long id;
 

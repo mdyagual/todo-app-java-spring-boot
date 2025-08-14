@@ -14,8 +14,12 @@ public interface PhaseMapper {
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "lastModifiedAt", ignore = true)
     @Mapping(target = "isActive", ignore = true)
+    @Mapping(target = "tasks", ignore = true)
+    @Mapping(target = "board", ignore = true)
     Phase toEntity(CreatePhaseDTO phaseDTO);
 
+    @Mapping(target = "board", ignore = true)
+    @Mapping(target = "tasks", ignore = true)
     PhaseDTO toDTO(Phase phase);
 
     void updateEntity(@MappingTarget Phase phase, UpdatePhaseDTO dto);

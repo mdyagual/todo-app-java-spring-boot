@@ -14,4 +14,7 @@ import lombok.ToString;
 public class CreatePhaseDTO {
     @NotNull(message = "Phase name is required: TO_DO, IN_PROGRESS, REVIEW, BLOCKED, DONE")
     private PhaseName name;
+
+    @NotNull(message = "ID must not be empty")
+    private Long boardId;
 }
