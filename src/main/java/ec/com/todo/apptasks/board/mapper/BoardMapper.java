@@ -15,10 +15,17 @@ public interface BoardMapper {
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "lastModifiedAt", ignore = true)
     @Mapping(target = "user", ignore = true)
+    @Mapping(target = "phases", ignore = true)
     Board toEntity(CreateBoardDTO boardDTO);
 
-    @Mapping(target = "user", ignore = true)
+    @Mapping(target = "phases",
+            expression = "java(board.getPhases() == null ? java.util.Collections.emptyList() : board.getPhases().stream().map(p -> p.getId()).toList())")
     BoardDTO toDTO (Board board);
 
+    @Mapping(target = "isActive", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "lastModifiedAt", ignore = true)
+    @Mapping(target = "user", ignore = true)
+    @Mapping(target = "phases", ignore = true)
     void updateEntity(@MappingTarget Board board, UpdateBoardDTO dto);
 }

@@ -16,8 +16,12 @@ public interface UserMapper {
     @Mapping(target = "boards", ignore = true)
     User toEntity(CreateUserDTO userDTO);
 
-    @Mapping(target = "boards", ignore = true)
+    @Mapping(target = "boards",
+            expression = "java(user.getBoards() == null ? java.util.Collections.emptyList() : user.getBoards().stream().map(b -> b.getId()).toList())")
     UserDTO toDTO(User user);
 
+    @Mapping(target = "isActive", ignore = true)
+    @Mapping(target = "password", ignore = true)
+    @Mapping(target = "boards", ignore = true)
     void updateEntity(@MappingTarget User user, UpdateUserDTO dto);
 }

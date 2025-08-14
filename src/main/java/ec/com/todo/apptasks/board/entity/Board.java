@@ -33,7 +33,7 @@ public class Board {
     private User user;
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
-    public List<Phase> columns;
+    public List<Phase> phases;
 
     @PrePersist
     protected void onCreate() {

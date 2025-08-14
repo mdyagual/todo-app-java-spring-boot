@@ -18,9 +18,14 @@ public interface PhaseMapper {
     @Mapping(target = "board", ignore = true)
     Phase toEntity(CreatePhaseDTO phaseDTO);
 
-    @Mapping(target = "board", ignore = true)
-    @Mapping(target = "tasks", ignore = true)
+    @Mapping(target = "tasks",
+            expression = "java(phase.getTasks() == null ? java.util.Collections.emptyList() : phase.getTasks().stream().map(t -> t.getId()).toList())")
     PhaseDTO toDTO(Phase phase);
 
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "lastModifiedAt", ignore = true)
+    @Mapping(target = "isActive", ignore = true)
+    @Mapping(target = "tasks", ignore = true)
+    @Mapping(target = "board", ignore = true)
     void updateEntity(@MappingTarget Phase phase, UpdatePhaseDTO dto);
 }
