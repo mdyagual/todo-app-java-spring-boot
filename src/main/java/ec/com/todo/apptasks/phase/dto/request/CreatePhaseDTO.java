@@ -12,7 +12,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class CreatePhaseDTO {
-    @NotNull(message = "Phase name is required: TO_DO, IN_PROGRESS, REVIEW, BLOCKED, DONE")
+    @NotNull(message = "Phase name is required: TO DO, IN PROGRESS, REVIEW, BLOCKED, DONE")
     private PhaseName name;
 
     @NotNull(message = "ID must not be empty")

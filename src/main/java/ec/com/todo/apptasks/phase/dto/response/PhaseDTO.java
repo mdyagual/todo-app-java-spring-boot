@@ -12,6 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @ToString
 public class PhaseDTO {
+    private Long id;
     private String name;
     private List<Long> tasks;
 }
