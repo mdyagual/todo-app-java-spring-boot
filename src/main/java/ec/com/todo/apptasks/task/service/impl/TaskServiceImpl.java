@@ -33,7 +33,7 @@ public class TaskServiceImpl implements TaskService {
     public void save(CreateTaskDTO tDTO) {
         Task task = mapper.toEntity(tDTO);
         task.setPhase(phaseService.getReferenceById(tDTO.getPhaseId()));
-        taskRepository.save(mapper.toEntity(tDTO));
+        taskRepository.save(task);
     }
 
     @Override

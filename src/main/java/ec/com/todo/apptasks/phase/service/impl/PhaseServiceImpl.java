@@ -47,7 +47,7 @@ public class PhaseServiceImpl implements PhaseService {
     public void save(CreatePhaseDTO pDTO) {
         Phase phase = mapper.toEntity(pDTO);
         phase.setBoard(boardService.getReferenceById(pDTO.getBoardId()));
-        phaseRepository.save(mapper.toEntity(pDTO));
+        phaseRepository.save(phase);
     }
 
     @Override
