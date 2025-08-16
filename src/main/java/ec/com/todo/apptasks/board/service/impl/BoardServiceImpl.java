@@ -10,10 +10,9 @@ import ec.com.todo.apptasks.board.mapper.BoardMapperImpl;
 import ec.com.todo.apptasks.board.repository.BoardRepository;
 import ec.com.todo.apptasks.board.service.BoardService;
 import ec.com.todo.apptasks.shared.exception.ResourceNotFoundException;
-import ec.com.todo.apptasks.user.entity.User;
 import ec.com.todo.apptasks.user.service.UserService;
-import ec.com.todo.apptasks.user.service.impl.UserServiceImpl;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -23,12 +22,25 @@ import java.util.List;
 public class BoardServiceImpl implements BoardService {
     private final BoardRepository boardRepository;
     private final UserService userService;
+    private final EntityManager entityManager;
     private final BoardMapper mapper;
 
-    public BoardServiceImpl(BoardRepository boardRepository, UserService userService) {
+    public BoardServiceImpl(BoardRepository boardRepository, UserService userService, EntityManager entityManager) {
         this.boardRepository = boardRepository;
         this.userService = userService;
+        this.entityManager = entityManager;
         this.mapper = new BoardMapperImpl();
+    }
+
+    @Override
+    public Board getReferenceById(Long id) {
+        return entityManager.getReference(Board.class, id);
+    }
+
+    @Override
+    public Board getBoardOrThrow(Long id) {
+        return boardRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Board not found: " + id));
     }
 
     @Override

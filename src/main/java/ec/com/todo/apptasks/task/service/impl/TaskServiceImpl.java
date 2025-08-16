@@ -1,10 +1,13 @@
 package ec.com.todo.apptasks.task.service.impl;
 
+import ec.com.todo.apptasks.phase.entity.Phase;
+import ec.com.todo.apptasks.phase.service.PhaseService;
 import ec.com.todo.apptasks.shared.exception.ResourceNotFoundException;
 import ec.com.todo.apptasks.task.dto.request.CreateTaskDTO;
 import ec.com.todo.apptasks.task.dto.request.DeleteTaskDTO;
 import ec.com.todo.apptasks.task.dto.request.UpdateTaskDTO;
 import ec.com.todo.apptasks.task.dto.response.TaskDTO;
+import ec.com.todo.apptasks.task.entity.Task;
 import ec.com.todo.apptasks.task.mapper.TaskMapper;
 import ec.com.todo.apptasks.task.mapper.TaskMapperImpl;
 import ec.com.todo.apptasks.task.repository.TaskRepository;
@@ -17,15 +20,19 @@ import java.util.List;
 @Service
 public class TaskServiceImpl implements TaskService {
     private final TaskRepository taskRepository;
+    private final PhaseService phaseService;
     private final TaskMapper mapper;
 
-    public TaskServiceImpl(TaskRepository taskRepository){
+    public TaskServiceImpl(TaskRepository taskRepository, PhaseService phaseService) {
         this.taskRepository = taskRepository;
+        this.phaseService = phaseService;
         this.mapper = new TaskMapperImpl();
     }
 
     @Override
     public void save(CreateTaskDTO tDTO) {
+        Task task = mapper.toEntity(tDTO);
+        task.setPhase(phaseService.getReferenceById(tDTO.getPhaseId()));
         taskRepository.save(mapper.toEntity(tDTO));
     }
 
