@@ -2,6 +2,7 @@ package ec.com.todo.apptasks.shared.exception;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import ec.com.todo.apptasks.phase.entity.PhaseName;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    //Field format is not valid
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ValidationErrorResponse> handleValidationErrors(MethodArgumentNotValidException ex) {
         ValidationErrorResponse errorResponse = new ValidationErrorResponse(
@@ -33,6 +35,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
+    //Enum value is not valid
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ValidationErrorResponse> handleEnumErrors(HttpMessageNotReadableException ex) {
         ValidationErrorResponse errorResponse = new ValidationErrorResponse(
@@ -55,6 +58,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
+    //Resource not found at service layer
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleResourceNotFound(ResourceNotFoundException ex) {
         ErrorResponse error = new ErrorResponse(
@@ -62,5 +66,14 @@ public class GlobalExceptionHandler {
                 ex.getMessage()
         );
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+    //Resource duplicated at service layer
+    @ExceptionHandler(DuplicateResourceException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateResource(DuplicateResourceException ex) {
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.NOT_FOUND.value(),
+                ex.getMessage()
+        );
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
 }
