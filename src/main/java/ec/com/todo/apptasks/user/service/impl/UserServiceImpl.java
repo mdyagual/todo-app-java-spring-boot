@@ -1,5 +1,6 @@
 package ec.com.todo.apptasks.user.service.impl;
 
+import ec.com.todo.apptasks.shared.exception.DuplicateResourceException;
 import ec.com.todo.apptasks.shared.exception.ResourceNotFoundException;
 import ec.com.todo.apptasks.user.dto.request.CreateUserDTO;
 import ec.com.todo.apptasks.user.dto.request.DeleteUserDTO;
@@ -43,12 +44,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void save(CreateUserDTO uDTO) {
+
+        if (isUnique(uDTO.getUsername(), uDTO.getEmail())){
+            throw new DuplicateResourceException("User", List.of(uDTO.getUsername(), uDTO.getEmail()));
+        }
+
         // Generate random password (could be UUID or other logic)
         String rawPassword = UUID.randomUUID().toString().substring(0, 8);
         String hashedPassword = passwordEncoder.encode(rawPassword);
 
         User user = mapper.toEntity(uDTO);
         user.setPassword(hashedPassword); // Set the hashed password
+
 
         userRepository.save(user);
     }
@@ -88,5 +95,9 @@ public class UserServiceImpl implements UserService {
                         }
                 );
 
+    }
+
+    public Boolean isUnique(String username, String email) {
+        return userRepository.existsByUsername(username) && userRepository.existsByEmail(email);
     }
 }

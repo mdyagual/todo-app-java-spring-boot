@@ -2,6 +2,7 @@ package ec.com.todo.apptasks.task.service.impl;
 
 import ec.com.todo.apptasks.phase.entity.Phase;
 import ec.com.todo.apptasks.phase.service.PhaseService;
+import ec.com.todo.apptasks.shared.exception.DuplicateResourceException;
 import ec.com.todo.apptasks.shared.exception.ResourceNotFoundException;
 import ec.com.todo.apptasks.task.dto.request.CreateTaskDTO;
 import ec.com.todo.apptasks.task.dto.request.DeleteTaskDTO;
@@ -31,6 +32,10 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void save(CreateTaskDTO tDTO) {
+        if(taskRepository.existsByNameAndPhaseId(tDTO.getDescription(), tDTO.getPhaseId())) {
+            throw new DuplicateResourceException("Task", List.of("Description", tDTO.getPhaseId().toString()));
+        }
+
         Task task = mapper.toEntity(tDTO);
         task.setPhase(phaseService.getReferenceById(tDTO.getPhaseId()));
         taskRepository.save(task);

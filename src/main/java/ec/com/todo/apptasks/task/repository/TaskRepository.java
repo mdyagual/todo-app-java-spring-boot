@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long> {
+    Boolean existsByNameAndPhaseId(String name, Long phaseId);
 }

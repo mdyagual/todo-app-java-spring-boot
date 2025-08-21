@@ -9,6 +9,7 @@ import ec.com.todo.apptasks.board.mapper.BoardMapper;
 import ec.com.todo.apptasks.board.mapper.BoardMapperImpl;
 import ec.com.todo.apptasks.board.repository.BoardRepository;
 import ec.com.todo.apptasks.board.service.BoardService;
+import ec.com.todo.apptasks.shared.exception.DuplicateResourceException;
 import ec.com.todo.apptasks.shared.exception.ResourceNotFoundException;
 import ec.com.todo.apptasks.user.service.UserService;
 import jakarta.persistence.EntityManager;
@@ -45,6 +46,9 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public void save(CreateBoardDTO bDTO) {
+        if (boardRepository.existsByTitleAndUserId(bDTO.getTitle(),bDTO.getUserId())) {
+            throw new DuplicateResourceException("Board", List.of("title", "userId"));
+        }
         Board board = mapper.toEntity(bDTO);
         board.setUser(userService.getReferenceById(bDTO.getUserId()));
         boardRepository.save(board);
@@ -90,6 +94,9 @@ public class BoardServiceImpl implements BoardService {
                 );
 
     }
+
+
+
 
 
 }

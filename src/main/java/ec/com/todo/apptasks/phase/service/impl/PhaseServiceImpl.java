@@ -1,5 +1,6 @@
 package ec.com.todo.apptasks.phase.service.impl;
 
+import ec.com.todo.apptasks.board.exception.NumberOfPhasesException;
 import ec.com.todo.apptasks.board.service.BoardService;
 import ec.com.todo.apptasks.phase.dto.request.CreatePhaseDTO;
 import ec.com.todo.apptasks.phase.dto.request.DeletePhaseDTO;
@@ -10,6 +11,7 @@ import ec.com.todo.apptasks.phase.mapper.PhaseMapper;
 import ec.com.todo.apptasks.phase.mapper.PhaseMapperImpl;
 import ec.com.todo.apptasks.phase.repository.PhaseRepository;
 import ec.com.todo.apptasks.phase.service.PhaseService;
+import ec.com.todo.apptasks.shared.exception.DuplicateResourceException;
 import ec.com.todo.apptasks.shared.exception.ResourceNotFoundException;
 import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Service;
@@ -45,7 +47,16 @@ public class PhaseServiceImpl implements PhaseService {
 
     @Override
     public void save(CreatePhaseDTO pDTO) {
+        if (getNumberOfPhases(pDTO.getBoardId()) == 4) {
+            throw new NumberOfPhasesException(boardService.getReferenceById(pDTO.getBoardId()).getPhases().size());
+        }
+
+        if (phaseRepository.existsByNameAndBoardId(pDTO.getName().name(), pDTO.getBoardId())) {
+            throw new DuplicateResourceException("Phase", List.of("name", "boardId"));
+        }
+
         Phase phase = mapper.toEntity(pDTO);
+
         phase.setBoard(boardService.getReferenceById(pDTO.getBoardId()));
         phaseRepository.save(phase);
     }
@@ -89,5 +100,8 @@ public class PhaseServiceImpl implements PhaseService {
                 );
     }
 
+    private Integer getNumberOfPhases(Long boardId) {
+        return boardService.getReferenceById(boardId).getPhases().size();
+    }
 
 }
