@@ -1,6 +1,7 @@
 package ec.com.todo.apptasks.shared.exception;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import ec.com.todo.apptasks.board.exception.NumberOfPhasesException;
 import ec.com.todo.apptasks.phase.entity.PhaseName;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -56,6 +57,15 @@ public class GlobalExceptionHandler {
         );
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NumberOfPhasesException.class)
+    public ResponseEntity<ErrorResponse> handleNumberOfPhases(NumberOfPhasesException ex) {
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                ex.getMessage()
+        );
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
     //Resource not found at service layer

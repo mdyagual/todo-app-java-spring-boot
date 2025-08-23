@@ -47,14 +47,14 @@ public class PhaseServiceImpl implements PhaseService {
 
     @Override
     public void save(CreatePhaseDTO pDTO) {
-        if (getNumberOfPhases(pDTO.getBoardId()) == 4) {
-            throw new NumberOfPhasesException(boardService.getReferenceById(pDTO.getBoardId()).getPhases().size());
-        }
 
-        if (phaseRepository.existsByNameAndBoardId(pDTO.getName().name(), pDTO.getBoardId())) {
+        if (phaseRepository.existsByNameAndBoardId(pDTO.getName(), pDTO.getBoardId())) {
             throw new DuplicateResourceException("Phase", List.of("name", "boardId"));
         }
 
+        if (getNumberOfPhases(pDTO.getBoardId()) == 5) {
+            throw new NumberOfPhasesException(boardService.getReferenceById(pDTO.getBoardId()).getPhases().size());
+        }
         Phase phase = mapper.toEntity(pDTO);
 
         phase.setBoard(boardService.getReferenceById(pDTO.getBoardId()));

@@ -32,7 +32,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void save(CreateTaskDTO tDTO) {
-        if(taskRepository.existsByNameAndPhaseId(tDTO.getDescription(), tDTO.getPhaseId())) {
+        if(taskRepository.existsByDescriptionAndPhaseId(tDTO.getDescription(), tDTO.getPhaseId())) {
             throw new DuplicateResourceException("Task", List.of("Description", tDTO.getPhaseId().toString()));
         }
 

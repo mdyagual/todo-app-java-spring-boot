@@ -1,10 +1,11 @@
 package ec.com.todo.apptasks.phase.repository;
 
+import ec.com.todo.apptasks.phase.entity.PhaseName;
 import org.springframework.data.jpa.repository.JpaRepository;
 import ec.com.todo.apptasks.phase.entity.Phase;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PhaseRepository extends JpaRepository<Phase, Long> {
-    Boolean existsByNameAndBoardId(String name, Long boardId);
+    Boolean existsByNameAndBoardId(PhaseName name, Long boardId);
 }

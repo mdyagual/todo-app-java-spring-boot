@@ -14,7 +14,8 @@ public enum PhaseName {
     IN_PROGRESS("IN PROGRESS"),
     REVIEW("REVIEW"),
     BLOCKED("BLOCKED"),
-    DONE("DONE");
+    DONE("DONE"),
+    PAUSED("PAUSED");
 
     private final String name;
 
