@@ -8,7 +8,6 @@ import ec.com.todo.apptasks.user.dto.request.UpdateUserDTO;
 import ec.com.todo.apptasks.user.dto.response.UserDTO;
 import ec.com.todo.apptasks.user.entity.User;
 import ec.com.todo.apptasks.user.mapper.UserMapper;
-import ec.com.todo.apptasks.user.mapper.UserMapperImpl;
 import ec.com.todo.apptasks.user.repository.UserRepository;
 import ec.com.todo.apptasks.user.service.UserService;
 import jakarta.persistence.EntityManager;
@@ -26,9 +25,9 @@ public class UserServiceImpl implements UserService {
     private final EntityManager entityManager;
     private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, EntityManager entityManager) {
+    public UserServiceImpl(UserRepository userRepository, UserMapper mapper, PasswordEncoder passwordEncoder, EntityManager entityManager) {
         this.userRepository = userRepository;
-        this.mapper = new UserMapperImpl();
+        this.mapper = mapper;
         this.passwordEncoder = passwordEncoder;
         this.entityManager = entityManager;
     }
@@ -43,9 +42,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void save(CreateUserDTO uDTO) {
+    public UserDTO save(CreateUserDTO uDTO) {
 
-        if (isUnique(uDTO.getUsername(), uDTO.getEmail())){
+        if (userRepository.existsByUsernameOrEmail(uDTO.getUsername(), uDTO.getEmail())){
             throw new DuplicateResourceException("User", List.of(uDTO.getUsername(), uDTO.getEmail()));
         }
 
@@ -57,7 +56,7 @@ public class UserServiceImpl implements UserService {
         user.setPassword(hashedPassword); // Set the hashed password
 
 
-        userRepository.save(user);
+        return mapper.toDTO(userRepository.save(user));
     }
 
     @Override
@@ -69,17 +68,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void update(UpdateUserDTO uDTO) {
-        userRepository.findById(uDTO.getId())
-                .ifPresentOrElse(
-                        user -> {
-                            mapper.updateEntity(user, uDTO);
-                            userRepository.save(user);
-                        },
-                        () -> {
-                            throw new ResourceNotFoundException("User", uDTO.getId());
-                        }
-                );
+    public UserDTO update(UpdateUserDTO uDTO) {
+        return userRepository.findById(uDTO.getId())
+                .map(user -> {
+                    mapper.updateEntity(user, uDTO);
+                    return mapper.toDTO(userRepository.save(user));
+                })
+                .orElseThrow(() -> new ResourceNotFoundException("User", uDTO.getId()));
     }
 
     @Override
@@ -95,9 +90,5 @@ public class UserServiceImpl implements UserService {
                         }
                 );
 
-    }
-
-    public Boolean isUnique(String username, String email) {
-        return userRepository.existsByUsername(username) && userRepository.existsByEmail(email);
     }
 }

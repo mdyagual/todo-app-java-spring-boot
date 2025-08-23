@@ -9,10 +9,10 @@ import ec.com.todo.apptasks.user.entity.User;
 import java.util.List;
 
 public interface UserService {
-    void save(CreateUserDTO uDTO);
+    UserDTO save(CreateUserDTO uDTO);
     List<UserDTO> getAll();
     void delete(DeleteUserDTO uDTO);
-    void update(UpdateUserDTO uDTO);
+    UserDTO update(UpdateUserDTO uDTO);
     User getReferenceById(Long id);
     User getUserOrThrow(Long id);
 }
