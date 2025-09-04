@@ -9,10 +9,10 @@ import ec.com.todo.apptasks.board.entity.Board;
 import java.util.List;
 
 public interface BoardService {
-    void save(CreateBoardDTO bDTO);
+    BoardDTO save(CreateBoardDTO bDTO);
     List<BoardDTO> getAll();
     void delete(DeleteBoardDTO bDTO);
-    void update(UpdateBoardDTO bDTO);
+    BoardDTO update(UpdateBoardDTO bDTO);
     Board getReferenceById(Long id);
     Board getBoardOrThrow(Long id);
 }

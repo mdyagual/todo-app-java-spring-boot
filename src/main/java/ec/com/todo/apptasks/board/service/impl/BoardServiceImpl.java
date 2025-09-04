@@ -26,11 +26,11 @@ public class BoardServiceImpl implements BoardService {
     private final EntityManager entityManager;
     private final BoardMapper mapper;
 
-    public BoardServiceImpl(BoardRepository boardRepository, UserService userService, EntityManager entityManager) {
+    public BoardServiceImpl(BoardRepository boardRepository, UserService userService, BoardMapper mapper, EntityManager entityManager) {
         this.boardRepository = boardRepository;
         this.userService = userService;
         this.entityManager = entityManager;
-        this.mapper = new BoardMapperImpl();
+        this.mapper = mapper;
     }
 
     @Override
@@ -45,13 +45,13 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public void save(CreateBoardDTO bDTO) {
+    public BoardDTO save(CreateBoardDTO bDTO) {
         if (boardRepository.existsByTitleAndUserId(bDTO.getTitle(),bDTO.getUserId())) {
             throw new DuplicateResourceException("Board", List.of("title", "userId"));
         }
         Board board = mapper.toEntity(bDTO);
         board.setUser(userService.getReferenceById(bDTO.getUserId()));
-        boardRepository.save(board);
+        return mapper.toDTO(boardRepository.save(board));
 
     }
 
@@ -64,19 +64,14 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public void update(UpdateBoardDTO bDTO) {
-        boardRepository.findById(bDTO.getId())
-                .ifPresentOrElse(
-                        board -> {
-
-                            mapper.updateEntity(board, bDTO);
-                            board.setLastModifiedAt(LocalDate.now());
-                            boardRepository.save(board);
-                        },
-                        () -> {
-                            throw new ResourceNotFoundException("Board", bDTO.getId());
-                        }
-                );
+    public BoardDTO update(UpdateBoardDTO bDTO) {
+        return boardRepository.findById(bDTO.getId())
+                .map(board -> {
+                        mapper.updateEntity(board, bDTO);
+                        board.setLastModifiedAt(LocalDate.now());
+                        return mapper.toDTO(boardRepository.save(board));
+                })
+                .orElseThrow(() -> new ResourceNotFoundException("Board", bDTO.getId()));
     }
 
     @Override
