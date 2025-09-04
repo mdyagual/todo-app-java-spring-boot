@@ -21,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -164,7 +165,7 @@ class UserServiceImplTest {
 
         //1
         Mockito.when(userRepository.findById(Mockito.any(Long.class)))
-                .thenReturn(java.util.Optional.of(existingUser));
+                .thenReturn(Optional.of(existingUser));
 
         Mockito.doAnswer(invocation -> {
             User userToUpdate = invocation.getArgument(0);
@@ -219,7 +220,7 @@ class UserServiceImplTest {
 
         //1
         Mockito.when(userRepository.findById(Mockito.any(Long.class)))
-                .thenReturn(java.util.Optional.of(existingUser));
+                .thenReturn(Optional.of(existingUser));
         Mockito.when(userRepository.save(Mockito.any(User.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
         //2
@@ -261,7 +262,7 @@ class UserServiceImplTest {
 
         //1
         Mockito.when(userRepository.findById(Mockito.any(Long.class)))
-                .thenReturn(java.util.Optional.empty());
+                .thenReturn(Optional.empty());
         //2
         Exception exception = assertThrows(ResourceNotFoundException.class, () -> userService.update(nDTO));
 
@@ -282,7 +283,7 @@ class UserServiceImplTest {
 
         //1
         Mockito.when(userRepository.findById(Mockito.any(Long.class)))
-                .thenReturn(java.util.Optional.empty());
+                .thenReturn(Optional.empty());
 
         //2
         Exception exception = assertThrows(ResourceNotFoundException.class, () -> userService.delete(dDTO));
