@@ -28,6 +28,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
+    /*Testing preparation
+     * 1. Elements that the service (in this case) needs to work
+     * 2. Mock all of them except the service
+     * 3. Set up the before each with the serviceImpl with all the elems that needs
+     * */
     @Mock
     private UserRepository userRepository;
 
@@ -84,6 +89,7 @@ class UserServiceImplTest {
                 .thenAnswer(invocation -> {
                     User userToSave = invocation.getArgument(0);
                     userToSave.setId(1L); // Simulate that the user is saved and gets an ID
+                    userToSave.setIsActive(true); //Simulate that the user is active when created bc it is in a PrePersist method
                     return userToSave;
                 });
         Mockito.when(mapper.toDTO(Mockito.any(User.class)))
@@ -108,7 +114,8 @@ class UserServiceImplTest {
                 () -> assertEquals(1L, result.getId(), "The ID should be 1L"),
                 () -> assertEquals(uDTO.getName(), result.getName(), "The name should match"),
                 () -> assertEquals(uDTO.getUsername(), result.getUsername(), "The username should match"),
-                () -> assertEquals(uDTO.getEmail(), result.getEmail(), "The email should match")
+                () -> assertEquals(uDTO.getEmail(), result.getEmail(), "The email should match"),
+                () -> assertTrue(result.getIsActive(), "The user should be active")
         );
 
         //4
