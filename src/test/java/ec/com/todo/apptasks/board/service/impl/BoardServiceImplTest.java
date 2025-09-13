@@ -1,23 +1,30 @@
 package ec.com.todo.apptasks.board.service.impl;
 
 import ec.com.todo.apptasks.board.dto.request.CreateBoardDTO;
+import ec.com.todo.apptasks.board.dto.request.DeleteBoardDTO;
+import ec.com.todo.apptasks.board.dto.request.UpdateBoardDTO;
 import ec.com.todo.apptasks.board.dto.response.BoardDTO;
 import ec.com.todo.apptasks.board.entity.Board;
 import ec.com.todo.apptasks.board.mapper.BoardMapper;
 import ec.com.todo.apptasks.board.repository.BoardRepository;
 import ec.com.todo.apptasks.board.service.BoardService;
+import ec.com.todo.apptasks.shared.exception.DuplicateResourceException;
+import ec.com.todo.apptasks.shared.exception.ResourceNotFoundException;
 import ec.com.todo.apptasks.user.entity.User;
 import ec.com.todo.apptasks.user.service.UserService;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -124,14 +131,179 @@ class BoardServiceImplTest {
     }
 
     @Test
-    void getAll() {
+    void getAllSuccess() {
+        //0
+        List<Board> boards = new ArrayList<>();
+        boards.add(new Board(1L, "Board 1", LocalDate.now(), LocalDate.now(), true, new User(), new ArrayList<>()));
+        boards.add(new Board(2L, "Board 2", LocalDate.now(), LocalDate.now(), true, new User(), new ArrayList<>()));
+        boards.add(new Board(3L, "Board 3", LocalDate.now(), LocalDate.now(), true, new User(), new ArrayList<>()));
+
+        //1
+        Mockito.when(boardRepository.findAll()).thenReturn(boards);
+
+        Mockito.when(mapper.toDTO(Mockito.any(Board.class)))
+                .thenAnswer(invocationOnMock -> {
+                    Board b = invocationOnMock.getArgument(0);
+                    return new BoardDTO(b.getId(),
+                            b.getTitle(),
+                            b.getCreatedAt(),
+                            b.getLastModifiedAt(),
+                            b.getIsActive(),
+                            new ArrayList<>());
+                });
+
+        //2
+        List<BoardDTO> result = boardService.getAll();
+
+        //3
+        assertAll("All boards",
+                () -> assertNotNull(result),
+                () -> assertEquals(3, result.size())
+        );
+
+        //4
+        Mockito.verify(boardRepository).findAll();
+        Mockito.verify(mapper, Mockito.times(3)).toDTO(Mockito.any(Board.class));
     }
 
     @Test
-    void update() {
+    void updateBoardSuccess() {
+        //0
+        UpdateBoardDTO bDTO = new UpdateBoardDTO(1L, "Updated Board" );
+        Board existingBoard = new Board(1L, "Old Board", LocalDate.now().minusDays(5), LocalDate.now().minusDays(5), true, new User(), new ArrayList<>());
+        LocalDate previousLastModifiedAt = existingBoard.getLastModifiedAt();
+
+        //1
+        Mockito.when(boardRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(existingBoard));
+
+        Mockito.doAnswer(invocationOnMock -> {
+            Board boardToUpdate = invocationOnMock.getArgument(0);
+            boardToUpdate.setTitle(bDTO.getTitle());
+            boardToUpdate.setLastModifiedAt(LocalDate.now());
+            return null;
+        }).when(mapper).updateEntity(Mockito.any(Board.class), Mockito.any(UpdateBoardDTO.class));
+
+
+        Mockito.when(boardRepository.save(Mockito.any(Board.class)))
+                .thenAnswer(invocationOnMock -> invocationOnMock.getArgument(0));
+
+        Mockito.when(mapper.toDTO(Mockito.any(Board.class)))
+                .thenAnswer(invocationOnMock -> {
+                    Board updatedBoard = invocationOnMock.getArgument(0);
+                    return new BoardDTO(updatedBoard.getId(),
+                            updatedBoard.getTitle(),
+                            updatedBoard.getCreatedAt(),
+                            updatedBoard.getLastModifiedAt(),
+                            updatedBoard.getIsActive(),
+                            new ArrayList<>()
+                    );
+                });
+
+        //2
+        BoardDTO result = boardService.update(bDTO);
+
+
+        //3
+        assertAll("Board updated",
+                () -> assertNotNull(result, "The result should not be null"),
+                () -> assertEquals(bDTO.getId(), result.getId(), "The IDs should match"),
+                () -> assertEquals(bDTO.getTitle(), result.getTitle(), "The titles should match"),
+                () -> assertTrue(result.getLastModifiedAt().isAfter(previousLastModifiedAt), "The last modified date should be updated"),
+                () -> assertTrue(result.getIsActive(), "The board should remain active")
+        );
+
+        //4
+        Mockito.verify(boardRepository).findById(bDTO.getId());
+        Mockito.verify(mapper).updateEntity(existingBoard, bDTO);
+        Mockito.verify(boardRepository).save(existingBoard);
+        Mockito.verify(mapper).toDTO(existingBoard);
+
     }
 
     @Test
-    void delete() {
+    void deleteBoardSuccess() {
+        //0
+        DeleteBoardDTO bDTO = new DeleteBoardDTO(1L);
+        Board existingBoard = new Board(1L, "Old Board", LocalDate.now().minusDays(5), LocalDate.now().minusDays(5), true, new User(), new ArrayList<>());
+
+        //1
+        Mockito.when(boardRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(existingBoard));
+        Mockito.when(boardRepository.save(Mockito.any(Board.class)))
+                .thenAnswer(invocationOnMock -> invocationOnMock.getArgument(0));
+
+        //2
+        assertDoesNotThrow(() -> boardService.delete(bDTO));
+
+        //3
+        assertFalse(existingBoard.getIsActive(), "The board should be marked as inactive");
+
+        //4
+        Mockito.verify(boardRepository).findById(bDTO.getId());
+        Mockito.verify(boardRepository).save(existingBoard);
+
+    }
+
+    @Test
+    void saveBoardDuplicateFailure(){
+        //0
+        CreateBoardDTO bDTO = new CreateBoardDTO("Board Test", 1L);
+
+        //1
+        Mockito.when(boardRepository.existsByTitleAndUserId(bDTO.getTitle(), bDTO.getUserId()))
+                .thenReturn(true);
+        //2
+        Exception exception = assertThrows(DuplicateResourceException.class, () -> boardService.save(bDTO));
+
+        //3
+        assertInstanceOf(DuplicateResourceException.class, exception);
+
+        //4
+        Mockito.verify(boardRepository).existsByTitleAndUserId(bDTO.getTitle(), bDTO.getUserId());
+        Mockito.verifyNoMoreInteractions(boardRepository);
+        Mockito.verifyNoInteractions(mapper);
+        Mockito.verifyNoInteractions(userService);
+    }
+
+    @Test
+    void updateBoardNotFoundFailure() {
+        //0
+        UpdateBoardDTO bDTO = new UpdateBoardDTO(1L, "Updated Board");
+
+        //1
+        Mockito.when(boardRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.empty());
+
+        //2
+        Exception exception = assertThrows(ResourceNotFoundException.class, () -> boardService.update(bDTO));
+
+        //3
+        assertInstanceOf(ResourceNotFoundException.class, exception);
+
+        //4
+        Mockito.verify(boardRepository).findById(bDTO.getId());
+        Mockito.verifyNoMoreInteractions(boardRepository);
+        Mockito.verifyNoInteractions(mapper);
+        Mockito.verifyNoInteractions(userService);
+    }
+
+    @Test
+    void deleteBoardNotFoundFailure() {
+        //0
+        DeleteBoardDTO bDTO = new DeleteBoardDTO(1L);
+
+        //1
+        Mockito.when(boardRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.empty());
+
+        //2
+        Exception exception = assertThrows(ResourceNotFoundException.class, () -> boardService.delete(bDTO));
+
+        //3
+        assertInstanceOf(ResourceNotFoundException.class, exception);
+
+        //4
+        Mockito.verify(boardRepository).findById(bDTO.getId());
+        Mockito.verifyNoMoreInteractions(boardRepository);
+        Mockito.verifyNoInteractions(mapper);
+        Mockito.verifyNoInteractions(userService);
+
     }
 }
