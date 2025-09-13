@@ -133,6 +133,7 @@ class UserServiceImplTest {
         users.add(new User(1L, "dhara", "dyagual", "dnym@gmail.com", "hashedPassword", true, new ArrayList<>()));
         users.add(new User(1L, "erick", "eburgos", "eabl@gmail.com", "hashedPassword", true, new ArrayList<>()));
 
+        //1
         Mockito.when(userRepository.findAll()).thenReturn(users);
         Mockito.when(mapper.toDTO(Mockito.any(User.class)))
                 .thenAnswer(invocation -> {
@@ -280,6 +281,7 @@ class UserServiceImplTest {
         Mockito.verify(userRepository).findById(nDTO.getId());
         Mockito.verifyNoMoreInteractions(userRepository);
         Mockito.verifyNoInteractions(mapper);
+
 
     }
 
