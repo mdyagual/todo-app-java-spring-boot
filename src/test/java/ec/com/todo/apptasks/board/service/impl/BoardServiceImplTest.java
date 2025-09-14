@@ -127,6 +127,7 @@ class BoardServiceImplTest {
         Mockito.verify(mapper).toEntity(bDTO);
         Mockito.verify(userService).getReferenceById(bDTO.getUserId());
         Mockito.verify(boardRepository).save(mappedBoard);
+        Mockito.verify(mapper).toDTO(Mockito.any(Board.class));
 
     }
 
