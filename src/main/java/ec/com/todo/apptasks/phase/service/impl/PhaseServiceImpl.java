@@ -26,11 +26,11 @@ public class PhaseServiceImpl implements PhaseService {
     private final EntityManager entityManager;
     private final PhaseMapper mapper;
 
-    public PhaseServiceImpl(PhaseRepository phaseRepository, BoardService boardService, EntityManager entityManager) {
+    public PhaseServiceImpl(PhaseRepository phaseRepository, PhaseMapper mapper, BoardService boardService, EntityManager entityManager) {
         this.phaseRepository = phaseRepository;
         this.boardService = boardService;
         this.entityManager = entityManager;
-        this.mapper = new PhaseMapperImpl();
+        this.mapper = mapper;
     }
 
 
@@ -46,7 +46,7 @@ public class PhaseServiceImpl implements PhaseService {
     }
 
     @Override
-    public void save(CreatePhaseDTO pDTO) {
+    public PhaseDTO save(CreatePhaseDTO pDTO) {
 
         if (phaseRepository.existsByNameAndBoardId(pDTO.getName(), pDTO.getBoardId())) {
             throw new DuplicateResourceException("Phase", List.of("name", "boardId"));
@@ -58,7 +58,7 @@ public class PhaseServiceImpl implements PhaseService {
         Phase phase = mapper.toEntity(pDTO);
 
         phase.setBoard(boardService.getReferenceById(pDTO.getBoardId()));
-        phaseRepository.save(phase);
+        return mapper.toDTO(phaseRepository.save(phase));
     }
 
     @Override
@@ -70,18 +70,15 @@ public class PhaseServiceImpl implements PhaseService {
     }
 
     @Override
-    public void update(UpdatePhaseDTO pDTO) {
-        phaseRepository.findById(pDTO.getId())
-                .ifPresentOrElse(
-                        phase -> {
-                            mapper.updateEntity(phase, pDTO);
-                            phase.setLastModifiedAt(LocalDate.now());
-                            phaseRepository.save(phase);
-                        },
-                        () -> {
-                            throw new ResourceNotFoundException("Phase", pDTO.getId());
-                        }
-                );
+    public PhaseDTO update(UpdatePhaseDTO pDTO) {
+        return phaseRepository.findById(pDTO.getId())
+                .map(phase -> {
+                        mapper.updateEntity(phase, pDTO);
+                        phase.setLastModifiedAt(LocalDate.now());
+                        return mapper.toDTO(phaseRepository.save(phase));
+
+                })
+                .orElseThrow(() -> new ResourceNotFoundException("Phase", pDTO.getId()));
     }
 
     @Override

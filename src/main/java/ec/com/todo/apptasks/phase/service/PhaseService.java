@@ -10,10 +10,11 @@ import ec.com.todo.apptasks.phase.entity.Phase;
 import java.util.List;
 
 public interface PhaseService {
-    void save(CreatePhaseDTO pDTO);
+    PhaseDTO save(CreatePhaseDTO pDTO);
     List<PhaseDTO> getAll();
-    void update(UpdatePhaseDTO pDTO);
+    PhaseDTO update(UpdatePhaseDTO pDTO);
     void delete(DeletePhaseDTO pDTO);
     Phase getReferenceById(Long id);
     Phase getPhaseOrThrow(Long id);
+
 }
