@@ -8,8 +8,8 @@ import ec.com.todo.apptasks.task.dto.response.TaskDTO;
 import java.util.List;
 
 public interface TaskService {
-    void save(CreateTaskDTO taskDTO);
+    TaskDTO save(CreateTaskDTO taskDTO);
     List<TaskDTO> getAll();
-    void update(UpdateTaskDTO taskDTO);
+    TaskDTO update(UpdateTaskDTO taskDTO);
     void delete(DeleteTaskDTO taskDTO);
 }

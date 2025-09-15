@@ -24,21 +24,21 @@ public class TaskServiceImpl implements TaskService {
     private final PhaseService phaseService;
     private final TaskMapper mapper;
 
-    public TaskServiceImpl(TaskRepository taskRepository, PhaseService phaseService) {
+    public TaskServiceImpl(TaskRepository taskRepository, TaskMapper mapper, PhaseService phaseService) {
         this.taskRepository = taskRepository;
         this.phaseService = phaseService;
-        this.mapper = new TaskMapperImpl();
+        this.mapper = mapper;
     }
 
     @Override
-    public void save(CreateTaskDTO tDTO) {
+    public TaskDTO save(CreateTaskDTO tDTO) {
         if(taskRepository.existsByDescriptionAndPhaseId(tDTO.getDescription(), tDTO.getPhaseId())) {
             throw new DuplicateResourceException("Task", List.of("Description", tDTO.getPhaseId().toString()));
         }
 
         Task task = mapper.toEntity(tDTO);
         task.setPhase(phaseService.getReferenceById(tDTO.getPhaseId()));
-        taskRepository.save(task);
+        return mapper.toDTO(taskRepository.save(task));
     }
 
     @Override
@@ -50,18 +50,16 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void update(UpdateTaskDTO tDTO) {
-        taskRepository.findById(tDTO.getId())
-                .ifPresentOrElse(
+    public TaskDTO update(UpdateTaskDTO tDTO) {
+        return taskRepository.findById(tDTO.getId())
+                .map(
                         task -> {
                             mapper.updateEntity(task, tDTO);
                             task.setLastModifiedAt(LocalDate.now());
-                            taskRepository.save(task);
-                        },
-                        () -> {
-                            throw new ResourceNotFoundException("Task", tDTO.getId());
-                        }
-                );
+                            return mapper.toDTO(taskRepository.save(task));
+                        }).orElseThrow(() -> new ResourceNotFoundException("Task", tDTO.getId()));
+
+
 
     }
 
