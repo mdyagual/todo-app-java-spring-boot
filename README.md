@@ -11,7 +11,7 @@ to connect with it.
 - DB: PostgresSQL
 
 ## Special note
-This project is the first part of a strategy known as “Engineering Diary” that popped up in my social media algorithm one day. 
+This project is the first result of a strategy known as “Engineering Diary” that popped up in my social media algorithm one day. 
 Surprisingly, it allowed me to develop consistency, enjoy the learning process, and revive the motivation I needed to reconnect 
 with software development. After failing many times to study in a more practical way, having managed to build this project from 
 scratch and really feel the learning process is personally a triumph for me.
