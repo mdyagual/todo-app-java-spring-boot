@@ -82,7 +82,7 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(createUserDTO)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.name").value(userDTO.getName()));
+                .andExpect(jsonPath("$.name").value(createUserDTO.getName()));
 
         //4.
         Mockito.verify(userService).save(Mockito.any(CreateUserDTO.class));
@@ -102,12 +102,11 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(updateUserDTO)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.username").value(userDTO.getUsername()));
+                .andExpect(jsonPath("$.username").value(updateUserDTO.getUsername()));
 
         //4.
         Mockito.verify(userService).update(Mockito.any(UpdateUserDTO.class));
     }
-
 
     @Test
     void deleteUser_shouldSuccess() throws Exception {
