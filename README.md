@@ -31,7 +31,7 @@ level, as topics such as the following were addressed during the construction of
 - Relational databases
 - Implementation and management of validations with Exceptions
 - Functional programming
-- Unit testing
+- Unit testing (Working)
 - Integration testing (Pending)
 - Security (Pending)
 - Swagger documentation (Pending)
