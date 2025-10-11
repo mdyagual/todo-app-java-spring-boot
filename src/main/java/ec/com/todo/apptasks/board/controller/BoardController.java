@@ -6,6 +6,8 @@ import ec.com.todo.apptasks.board.dto.request.UpdateBoardDTO;
 import ec.com.todo.apptasks.board.dto.response.BoardDTO;
 import ec.com.todo.apptasks.board.service.BoardService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,23 +22,24 @@ public class BoardController {
     }
 
     @GetMapping("/all")
-    public List<BoardDTO> getAllBoards() {
-        return boardService.getAll();
+    public ResponseEntity<List<BoardDTO>> getAllBoards() {
+        return ResponseEntity.ok(boardService.getAll());
     }
 
     @PostMapping("/create")
-    public void createBoard(@Valid @RequestBody CreateBoardDTO boardDTO) {
-        boardService.save(boardDTO);
+    public ResponseEntity<BoardDTO> createBoard(@Valid @RequestBody CreateBoardDTO boardDTO) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(boardService.save(boardDTO));
     }
 
     @PostMapping("/update")
-    public void updateBoard(@Valid @RequestBody UpdateBoardDTO boardDTO) {
-        boardService.update(boardDTO);
+    public ResponseEntity<BoardDTO> updateBoard(@Valid @RequestBody UpdateBoardDTO boardDTO) {
+        return ResponseEntity.ok(boardService.update(boardDTO));
     }
 
     @PostMapping("/delete")
-    public void deleteBoard(@Valid @RequestBody DeleteBoardDTO boardDTO) {
+    public ResponseEntity<Void> deleteBoard(@Valid @RequestBody DeleteBoardDTO boardDTO) {
         boardService.delete(boardDTO);
+        return ResponseEntity.accepted().build();
     }
 
 }
