@@ -47,7 +47,7 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public BoardDTO save(CreateBoardDTO bDTO) {
         if (boardRepository.existsByTitleAndUserId(bDTO.getTitle(),bDTO.getUserId())) {
-            throw new DuplicateResourceException("Board", List.of("title", "userId"));
+            throw new DuplicateResourceException("Board", List.of(bDTO.getTitle(), bDTO.getUserId().toString()));
         }
         Board board = mapper.toEntity(bDTO);
         board.setUser(userService.getReferenceById(bDTO.getUserId()));
