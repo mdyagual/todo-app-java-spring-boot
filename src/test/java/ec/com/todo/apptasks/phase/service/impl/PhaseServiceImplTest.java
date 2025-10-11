@@ -118,7 +118,7 @@ class PhaseServiceImplTest {
                 () -> assertEquals(pDTO.getName().name(), result.getName()),
                 () -> assertNotNull(result.getCreatedAt()),
                 () -> assertNotNull(result.getLastModifiedAt()),
-                () -> assertTrue(result.getIsActive()),
+                () -> assertFalse(result.getIsActive()),
                 () -> assertNotNull(result.getTasks()),
                 () -> assertTrue(result.getTasks().isEmpty())
         );

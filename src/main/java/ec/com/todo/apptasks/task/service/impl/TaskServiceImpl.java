@@ -1,6 +1,5 @@
 package ec.com.todo.apptasks.task.service.impl;
 
-import ec.com.todo.apptasks.phase.entity.Phase;
 import ec.com.todo.apptasks.phase.service.PhaseService;
 import ec.com.todo.apptasks.shared.exception.DuplicateResourceException;
 import ec.com.todo.apptasks.shared.exception.ResourceNotFoundException;
@@ -10,7 +9,6 @@ import ec.com.todo.apptasks.task.dto.request.UpdateTaskDTO;
 import ec.com.todo.apptasks.task.dto.response.TaskDTO;
 import ec.com.todo.apptasks.task.entity.Task;
 import ec.com.todo.apptasks.task.mapper.TaskMapper;
-import ec.com.todo.apptasks.task.mapper.TaskMapperImpl;
 import ec.com.todo.apptasks.task.repository.TaskRepository;
 import ec.com.todo.apptasks.task.service.TaskService;
 import org.springframework.stereotype.Service;
@@ -69,6 +67,7 @@ public class TaskServiceImpl implements TaskService {
                 .ifPresentOrElse(
                         task -> {
                             task.setIsActive(false);
+                            task.setLastModifiedAt(LocalDate.now());
                             taskRepository.save(task);
                         },
                         () -> {

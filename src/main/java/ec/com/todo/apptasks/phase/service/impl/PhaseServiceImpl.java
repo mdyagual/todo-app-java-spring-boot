@@ -8,7 +8,6 @@ import ec.com.todo.apptasks.phase.dto.request.UpdatePhaseDTO;
 import ec.com.todo.apptasks.phase.dto.response.PhaseDTO;
 import ec.com.todo.apptasks.phase.entity.Phase;
 import ec.com.todo.apptasks.phase.mapper.PhaseMapper;
-import ec.com.todo.apptasks.phase.mapper.PhaseMapperImpl;
 import ec.com.todo.apptasks.phase.repository.PhaseRepository;
 import ec.com.todo.apptasks.phase.service.PhaseService;
 import ec.com.todo.apptasks.shared.exception.DuplicateResourceException;
@@ -83,7 +82,6 @@ public class PhaseServiceImpl implements PhaseService {
 
     @Override
     public void delete(DeletePhaseDTO pDTO) {
-
         phaseRepository.findById(pDTO.getId())
                 .ifPresentOrElse(
                         phase -> {

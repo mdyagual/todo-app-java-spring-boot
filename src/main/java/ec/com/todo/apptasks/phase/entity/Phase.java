@@ -41,6 +41,6 @@ public class Phase {
     public void onCreate() {
         this.createdAt = LocalDate.now();
         this.lastModifiedAt = LocalDate.now();
-        this.isActive = true;
+        this.isActive = false;
     }
 }
