@@ -31,7 +31,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public TaskDTO save(CreateTaskDTO tDTO) {
         if(taskRepository.existsByDescriptionAndPhaseId(tDTO.getDescription(), tDTO.getPhaseId())) {
-            throw new DuplicateResourceException("Task", List.of("Description", tDTO.getPhaseId().toString()));
+            throw new DuplicateResourceException("Task", List.of(tDTO.getDescription(), tDTO.getPhaseId().toString()));
         }
 
         Task task = mapper.toEntity(tDTO);

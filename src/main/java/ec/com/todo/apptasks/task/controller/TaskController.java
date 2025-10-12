@@ -6,6 +6,8 @@ import ec.com.todo.apptasks.task.dto.request.UpdateTaskDTO;
 import ec.com.todo.apptasks.task.dto.response.TaskDTO;
 import ec.com.todo.apptasks.task.service.TaskService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,23 +22,24 @@ public class TaskController {
     }
 
     @GetMapping("/all")
-    public List<TaskDTO> getAllTasks() {
-        return taskService.getAll();
+    public ResponseEntity<List<TaskDTO>> getAllTasks() {
+        return ResponseEntity.ok(taskService.getAll());
     }
 
     @PostMapping("/create")
-    public void createTask(@Valid @RequestBody CreateTaskDTO taskDTO) {
-        taskService.save(taskDTO);
+    public ResponseEntity<TaskDTO> createTask(@Valid @RequestBody CreateTaskDTO taskDTO) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(taskService.save(taskDTO));
     }
 
     @PostMapping("/update")
-    public void updateTask(@Valid @RequestBody UpdateTaskDTO taskDTO) {
-        taskService.update(taskDTO);
+    public ResponseEntity<TaskDTO> updateTask(@Valid @RequestBody UpdateTaskDTO taskDTO) {
+        return ResponseEntity.ok(taskService.update(taskDTO));
     }
 
     @PostMapping("/delete")
-    public void deleteTask(@Valid @RequestBody DeleteTaskDTO taskDTO) {
+    public ResponseEntity<Void> deleteTask(@Valid @RequestBody DeleteTaskDTO taskDTO) {
         taskService.delete(taskDTO);
+        return ResponseEntity.accepted().build();
     }
 }
 

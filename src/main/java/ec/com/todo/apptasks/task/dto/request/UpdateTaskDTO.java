@@ -16,7 +16,7 @@ public class UpdateTaskDTO {
     @NotNull(message = "ID must not be empty")
     private Long id;
 
-    @Pattern(regexp = "^[a-zA-Z0-9]{3,20}$", message = "Description must be 4-50 characters, only letters and numbers")
+    @Pattern(regexp = "^[a-zA-Z0-9 ]{3,20}$", message = "Description must be 4-50 characters, only letters and numbers")
     @NotBlank(message = "Description must not be empty")
     private String description;
 }
