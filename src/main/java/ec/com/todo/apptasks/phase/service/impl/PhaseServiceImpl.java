@@ -48,7 +48,7 @@ public class PhaseServiceImpl implements PhaseService {
     public PhaseDTO save(CreatePhaseDTO pDTO) {
 
         if (phaseRepository.existsByNameAndBoardId(pDTO.getName(), pDTO.getBoardId())) {
-            throw new DuplicateResourceException("Phase", List.of("name", "boardId"));
+            throw new DuplicateResourceException("Phase", List.of(pDTO.getName().name(), pDTO.getBoardId().toString()));
         }
 
         if (getNumberOfPhases(pDTO.getBoardId()) == 5) {

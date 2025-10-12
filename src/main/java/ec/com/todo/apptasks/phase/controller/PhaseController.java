@@ -6,6 +6,8 @@ import ec.com.todo.apptasks.phase.dto.request.UpdatePhaseDTO;
 import ec.com.todo.apptasks.phase.dto.response.PhaseDTO;
 import ec.com.todo.apptasks.phase.service.PhaseService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,22 +22,23 @@ public class PhaseController {
     }
 
     @GetMapping("/all")
-    public List<PhaseDTO> getAllPhases() {
-        return phaseService.getAll();
+    public ResponseEntity<List<PhaseDTO>> getAllPhases() {
+        return ResponseEntity.ok(phaseService.getAll());
     }
 
     @PostMapping("/create")
-    public void createPhase(@Valid @RequestBody CreatePhaseDTO phaseDTO) {
-        phaseService.save(phaseDTO);
+    public ResponseEntity<PhaseDTO> createPhase(@Valid @RequestBody CreatePhaseDTO phaseDTO) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(phaseService.save(phaseDTO));
     }
 
     @PostMapping("/update")
-    public void updatePhase(@Valid @RequestBody UpdatePhaseDTO phaseDTO) {
-        phaseService.update(phaseDTO);
+    public ResponseEntity<PhaseDTO> updatePhase(@Valid @RequestBody UpdatePhaseDTO phaseDTO) {
+        return ResponseEntity.ok(phaseService.update(phaseDTO));
     }
 
     @PostMapping("/delete")
-    public void deletePhase(@Valid @RequestBody DeletePhaseDTO phaseDTO) {
+    public ResponseEntity<Void> deletePhase(@Valid @RequestBody DeletePhaseDTO phaseDTO) {
         phaseService.delete(phaseDTO);
+        return ResponseEntity.accepted().build();
     }
 }

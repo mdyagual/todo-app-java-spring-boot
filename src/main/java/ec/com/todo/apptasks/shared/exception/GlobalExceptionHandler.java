@@ -3,7 +3,6 @@ package ec.com.todo.apptasks.shared.exception;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import ec.com.todo.apptasks.board.exception.NumberOfPhasesException;
 import ec.com.todo.apptasks.phase.entity.PhaseName;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
